@@ -20,7 +20,7 @@ An end-to-end data warehouse and BI system that answers those questions from fiv
 | Demand shape | Café window 40.4% of footfall vs lunch window 30% — people drink more than they eat here |
 | Future demand | 607 residential dwellings under construction: 5th highest of 56 blocks, 18× the median |
 
-![Overview](Documents/screenshots/block51.png)
+![Overview](Documents/screenshots/Location.png)
 
 Block 35 (Retail Strip) and Block 15 (Mixed Commercial) have larger absolute seat gaps but are already crowded — 21 and 37 venues respectively. Block 51 pairs a real shortage with a thin competitive field.
 
