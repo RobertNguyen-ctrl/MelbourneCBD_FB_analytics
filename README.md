@@ -4,8 +4,7 @@
 
 An end-to-end data warehouse and BI system that answers those questions from five open datasets (~2.37 million rows), built with SQL Server, SSIS, Power BI, Python and R.
 
-![Overview](C:/MelbourneFB/Overview.png)
-
+![Overview](Documents/screenshots/Overview.png)
 ---
 
 ## Recommendation
