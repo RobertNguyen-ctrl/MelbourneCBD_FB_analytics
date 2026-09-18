@@ -1,0 +1,29 @@
+# Visual Studio / SSIS
+.vs/
+bin/
+obj/
+*.ispac
+*.dtproj.user
+*.suo
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Power BI
+*.pbix.bak
+
+# Dữ liệu thô
+*.csv
+*.xlsx
+!**/sample/*.csv
+
+# Windows
+Thumbs.db
+desktop.ini

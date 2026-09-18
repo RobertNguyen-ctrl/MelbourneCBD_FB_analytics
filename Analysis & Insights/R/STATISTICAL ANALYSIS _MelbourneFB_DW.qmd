@@ -1,0 +1,311 @@
+---
+title: "Project_Melbourne"
+format: html
+editor: visual
+---
+
+## STATISTICAL ANALYSIS - MelbourneFB_DW
+
+\# Purpose: hypothesis tests and exploratory plots supporting BQ7 (weather), BQ2/BQ3 (trading hours), BQ1 (supply-demand).
+
+\# Outputs are figures for the defence slides.
+
+\# Principle: AGGREGATE IN SQL, ANALYSE IN R. \# Never pull 1.6M rows into the R session.
+
+```{r}
+library(DBI)
+library(dplyr)
+library(ggplot2)
+
+# ---------------------------------------------------------------------
+# 0. CONNECTION
+# ---------------------------------------------------------------------
+# If the driver name fails, run odbc::odbcListDrivers() to list installed ones.
+con <- dbConnect(odbc::odbc(),
+                 Driver   = "ODBC Driver 17 for SQL Server",
+                 Server   = "LAPTOP-DBD3DPCV",
+                 Database = "MelbourneFB_DW",
+                 Trusted_Connection = "Yes")
+
+dbGetQuery(con, "SELECT COUNT(*) AS n FROM dw.DimBlock")
+i64 <- sapply(hourly, function(x) inherits(x, "integer64"))
+hourly[i64] <- lapply(hourly[i64], as.numeric) 
+# expect 604
+```
+
+```{r}
+# =====================================================================
+# PART 1 -- HOURLY PANEL  (feeds BQ7, BQ2, BQ3)
+# ---------------------------------------------------------------------
+# Grain: 1 day x 1 hour, pedestrians summed across stable-panel sensors.
+#
+# Only sensors with IsInStablePanel = 1 (~62 sensors, >= 95% hour coverage).
+# Reason: mixing newly installed and decommissioned sensors makes the
+# time series reflect HOW MANY SENSORS WERE ONLINE rather than actual
+# foot traffic.
+#
+# Melbourne weather comes from a single station, so every sensor shares
+# the same condition in a given hour -- aggregating to city level is valid.
+#
+# Expected size: ~17,520 rows.
+# =====================================================================
+sql_hourly <- "
+SELECT
+    d.FullDate,
+    d.DayOfWeekNumber,
+    d.DayName,
+    d.IsWeekend,
+    d.IsPublicHolidayVIC,
+    d.SeasonName,
+    t.TimeKey                AS Hour,
+    t.Daypart,
+    t.InCafeWindow,
+    t.InLunchWindow,
+    t.InAllDayWindow,
+    t.InNightWindow,
+    w.IsRaining,
+    w.TemperatureBand,
+    w.PrecipitationBand,
+    AVG(CAST(f.TemperatureC AS FLOAT))      AS TempC,
+    AVG(CAST(f.PrecipitationMM AS FLOAT))   AS PrecipMM,
+    SUM(CAST(f.TotalPedestrians AS BIGINT)) AS Ped
+FROM dw.FactFootfallHourly f
+JOIN dw.DimDate    d ON d.DateKey    = f.DateKey
+JOIN dw.DimTime    t ON t.TimeKey    = f.TimeKey
+JOIN dw.DimWeather w ON w.WeatherKey = f.WeatherKey
+JOIN dw.DimSensor  s ON s.SensorKey  = f.SensorKey
+WHERE s.IsInStablePanel = 1
+  AND f.SensorKey  <> -1
+  AND f.WeatherKey <> -1
+GROUP BY d.FullDate, d.DayOfWeekNumber, d.DayName, d.IsWeekend,
+         d.IsPublicHolidayVIC, d.SeasonName,
+         t.TimeKey, t.Daypart, t.InCafeWindow, t.InLunchWindow,
+         t.InAllDayWindow, t.InNightWindow,
+         w.IsRaining, w.TemperatureBand, w.PrecipitationBand
+"
+hourly <- dbGetQuery(con, sql_hourly)
+i64 <- sapply(hourly, function(x) inherits(x, "integer64"))
+hourly[i64] <- lapply(hourly[i64], as.numeric)
+
+# NOTE ON BIT COLUMNS
+# SQL Server BIT arrives in R as logical TRUE/FALSE, not 0/1.
+# as.integer() normalises both cases: TRUE -> 1, and integers pass through.
+# Without it, factor(x, levels = c(0,1)) silently produces all NA and
+# lm() then fails with "contrasts can be applied only to factors with
+# 2 or more levels".
+hourly <- hourly %>%
+  mutate(
+    IsRaining = factor(as.integer(IsRaining), levels = c(0, 1),
+                       labels = c("No rain", "Rain")),
+    IsWeekend = factor(as.integer(IsWeekend), levels = c(0, 1),
+                       labels = c("Weekday", "Weekend")),
+    TemperatureBand   = factor(trimws(TemperatureBand),
+                               levels = c("Cold", "Mild", "Warm", "Hot")),
+    PrecipitationBand = factor(trimws(PrecipitationBand),
+                               levels = c("None", "Light", "Heavy")),
+    Hour = as.integer(Hour)
+  )
+
+# Sanity checks -- all must show every level with no NA
+nrow(hourly)                  # expect ~17,500
+table(hourly$IsRaining)       # rain typically 15-25% of hours
+table(hourly$TemperatureBand)
+summary(hourly$Ped)
+```
+
+```{r}
+# =====================================================================
+# PART 2 -- BQ2 / BQ3: SHAPE OF THE DAY
+# =====================================================================
+
+# 2a. 24-hour curve, weekday vs weekend.
+#     This is the chart that drives the opening-hours recommendation.
+p_profile <- hourly %>%
+  group_by(Hour, IsWeekend) %>%
+  summarise(MeanPed = mean(Ped), .groups = "drop") %>%
+  ggplot(aes(Hour, MeanPed, colour = IsWeekend)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 1.5) +
+  scale_x_continuous(breaks = seq(0, 23, 3)) +
+  scale_colour_manual(values = c("Weekday" = "#2E5C6E",
+                                 "Weekend" = "#C08A2E")) +
+  labs(title = "Pedestrian volume by hour of day",
+       subtitle = "Mean across stable-panel sensors, Aug 2024 - Aug 2026",
+       x = "Hour of day", y = "Mean pedestrians", colour = NULL) +
+  theme_minimal(base_size = 12)
+print(p_profile)
+
+# 2b. Does the peak hour differ between weekday and weekend?
+hourly %>%
+  group_by(IsWeekend, Hour) %>%
+  summarise(MeanPed = mean(Ped), .groups = "drop") %>%
+  group_by(IsWeekend) %>%
+  slice_max(MeanPed, n = 1)
+
+# 2c. Share of traffic captured by each of the four trading windows.
+#     The windows OVERLAP by design, so these sum to more than 100%.
+#     If they sum to exactly 100% the BIT columns were built wrong.
+hourly %>%
+  summarise(
+    Cafe   = sum(Ped[InCafeWindow   == 1]) / sum(Ped) * 100,
+    Lunch  = sum(Ped[InLunchWindow  == 1]) / sum(Ped) * 100,
+    AllDay = sum(Ped[InAllDayWindow == 1]) / sum(Ped) * 100,
+    Night  = sum(Ped[InNightWindow  == 1]) / sum(Ped) * 100
+  )
+
+# 2d. BQ3: share of traffic after 22:00, split weekday/weekend.
+#     Drives the "is late-night trade worth it" decision.
+hourly %>%
+  group_by(IsWeekend) %>%
+  summarise(ShareAfter22h = sum(Ped[Hour >= 22]) / sum(Ped) * 100,
+            .groups = "drop")
+
+```
+
+```{r}
+# =====================================================================
+# PART 3 -- BQ7: DOES RAIN REDUCE FOOT TRAFFIC?
+# =====================================================================
+
+# 3a. Raw comparison -- DO NOT put this number in the slides.
+hourly %>%
+  group_by(IsRaining) %>%
+  summarise(Mean = mean(Ped), Median = median(Ped), n = n())
+
+# Why it is unusable: rain is not randomly distributed. It concentrates
+# in winter and in certain hours, so the raw gap confounds rain with
+# season and time of day. The cross-tab below makes that visible.
+table(hourly$SeasonName, hourly$IsRaining)
+
+# 3b. Controlled estimate -- THIS is the number for the slides.
+#     log1p because pedestrian counts are strongly right-skewed.
+#     factor(Hour) absorbs the shape of the day, DayName the weekday
+#     effect, TemperatureBand separates temperature from rain.
+m <- lm(log1p(Ped) ~ factor(Hour) + DayName + TemperatureBand + IsRaining,
+        data = hourly)
+
+# Confirm the coefficient name before extracting it
+rownames(summary(m)$coefficients)
+
+rain_term  <- "IsRainingRain"
+coef_rain  <- coef(m)[rain_term]
+pct_change <- (exp(coef_rain) - 1) * 100
+ci         <- (exp(confint(m)[rain_term, ]) - 1) * 100
+p_value    <- summary(m)$coefficients[rain_term, "Pr(>|t|)"]
+
+cat(sprintf(
+  "Rain changes pedestrian volume by %.1f%% (95%% CI: %.1f%% to %.1f%%), p = %.4g\n",
+  pct_change, ci[1], ci[2], p_value))
+
+# 3c. Is heavy rain different from light rain?
+#     Informs whether awnings / covered seating are worth the capital.
+#     "None" is the reference level, so coefficients read as change
+#     relative to dry conditions.
+m2 <- lm(Ped ~ factor(Hour) + DayName + TemperatureBand + PrecipitationBand,
+         data = hourly)
+precip_rows <- grep("PrecipitationBand", rownames(summary(m2)$coefficients))
+summary(m2)$coefficients[precip_rows, ]
+
+# 3d. Rain effect broken out by hour.
+#     If rain only bites at lunchtime, outdoor seating may still pay off.
+p_rain <- hourly %>%
+  group_by(Hour, IsRaining) %>%
+  summarise(MeanPed = mean(Ped), .groups = "drop") %>%
+  ggplot(aes(Hour, MeanPed, colour = IsRaining)) +
+  geom_line(linewidth = 1) +
+  scale_x_continuous(breaks = seq(0, 23, 3)) +
+  scale_colour_manual(values = c("No rain" = "#2E5C6E",
+                                 "Rain"    = "#5B7F52")) +
+  labs(title = "Rain effect by hour of day",
+       x = "Hour of day", y = "Mean pedestrians", colour = NULL) +
+  theme_minimal(base_size = 12)
+print(p_rain)
+```
+
+```{r}
+# =====================================================================
+# PART 4 -- BQ1: SUPPLY vs DEMAND BY BLOCK
+# ---------------------------------------------------------------------
+# Only 68 blocks have BOTH footfall coverage AND non-zero seating
+# (see test T36 in 11_integrity_check.sql). This is the single largest
+# limitation of the project and must be stated explicitly in the slides.
+# =====================================================================
+sql_block <- "
+SELECT
+    b.BlockID,
+    b.AreaName,
+    b.CLUESmallArea,
+    b.DaytimePopulationBand,
+    a.TotalSeats,
+    a.TotalFBVenues,
+    a.TotalJobs,
+    ff.AvgDailyPed
+FROM dw.FactBlockAnnual a
+JOIN dw.DimBlock b ON b.BlockKey = a.BlockKey
+JOIN (
+    SELECT BlockKey,
+           SUM(CAST(TotalPedestrians AS BIGINT)) * 1.0
+             / NULLIF(COUNT(DISTINCT DateKey), 0) AS AvgDailyPed
+    FROM dw.FactFootfallHourly
+    WHERE BlockKey <> -1
+    GROUP BY BlockKey
+) ff ON ff.BlockKey = a.BlockKey
+WHERE a.IsLatestCensusYear = 1
+  AND a.TotalSeats > 0
+"
+blocks <- dbGetQuery(con, sql_block) %>%
+  mutate(SeatSaturation = TotalSeats / (AvgDailyPed / 1000))
+i64 <- sapply(blocks, function(x) inherits(x, "integer64"))
+blocks[i64] <- lapply(blocks[i64], as.numeric)
+blocks <- blocks[blocks$AvgDailyPed >= 2000, ]
+nrow(blocks)   
+
+
+# 4a. Does supply follow demand?
+#     Spearman, since the relationship need not be linear and n is small.
+#     A weak correlation is the core argument for the whole project:
+#     it means the market has NOT allocated seating efficiently.
+cor.test(blocks$AvgDailyPed, blocks$TotalSeats, method = "spearman")
+
+# 4b. Supply-demand scatter. Bottom-right quadrant = high demand,
+#     low supply = the opportunity.
+p_block <- ggplot(blocks, aes(AvgDailyPed, TotalSeats)) +
+  geom_point(aes(size = TotalFBVenues), colour = "#2E5C6E", alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, colour = "#C08A2E", fill = "#E8E4DC") +
+  scale_size_continuous(range = c(2, 8)) +
+  labs(title = "Seating supply against pedestrian demand",
+       subtitle = paste0(nrow(blocks), " blocks with both data sources, 2024 census"),
+       x = "Mean daily pedestrians", y = "Total F&B seats",
+       size = "Venues") +
+  theme_minimal(base_size = 12)
+print(p_block)
+# 4d. Most saturated blocks -> the avoid list
+blocks %>%
+  arrange(desc(SeatSaturation)) %>%
+  select(BlockID, AreaName, AvgDailyPed, TotalSeats, SeatSaturation) %>%
+  head(10)
+
+# 4e. Does saturation differ across CLUE small areas?
+#     Kruskal-Wallis: no normality assumption, appropriate for small n.
+#     With 68 blocks spread over many areas each group is tiny, so this
+#     guards against reading a difference that is really just noise.
+kruskal.test(SeatSaturation ~ factor(CLUESmallArea), data = blocks)
+
+blocks %>%
+  group_by(CLUESmallArea) %>%
+  summarise(Blocks = n(),
+            MedianSaturation = median(SeatSaturation),
+            .groups = "drop") %>%
+  arrange(MedianSaturation)
+```
+
+```{r}
+# ---------------------------------------------------------------------
+# 5. EXPORT FIGURES
+# ---------------------------------------------------------------------
+ggsave("profile_24h.png",   p_profile, width = 8, height = 4.5, dpi = 150)
+ggsave("rain_effect.png",   p_rain,    width = 8, height = 4.5, dpi = 150)
+ggsave("supply_demand.png", p_block,   width = 8, height = 5.5, dpi = 150)
+
+dbDisconnect(con)
+```

@@ -1,0 +1,1288 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/14/2026 3:06:04 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="LAPTOP-DBD3DPCV"
+  DTS:CreatorName="LAPTOP-DBD3DPCV\Quang Bao"
+  DTS:DTSID="{3C719632-13DF-4E1C-B94C-E1F8E12F7A8E}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="17.0.1016.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="01_Load_Staging"
+  DTS:PackageType="5"
+  DTS:VersionBuild="39"
+  DTS:VersionGUID="{1CD98B22-7371-4468-ABC4-61E822A298B1}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[02_staging_load.sql]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{F9BF863E-AB08-4FEE-9513-11C7265E4F23}"
+      DTS:ObjectName="02_staging_load.sql">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\MelbourneFB\sql\02_staging_load.sql" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[03_spatial_mapping.sql]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{8C2B40E7-1DF5-48A7-902C-8E094CBB3DC8}"
+      DTS:ObjectName="03_spatial_mapping.sql">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="C:\MelbourneFB\sql\03_spatial_mapping.sql" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection Manager 1]"
+      DTS:CreationName="EXCEL"
+      DTS:DTSID="{F2264737-9479-4585-87F1-0A0B28E7BBE4}"
+      DTS:ObjectName="Excel Connection Manager 1">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="0"
+          DTS:ConnectRetryInterval="0"
+          DTS:ConnectionString="Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\MelbourneFB\landing\Current_Victorian_Licences_By_Location-30-April-2026.xlsx;Extended Properties=&quot;EXCEL 12.0 XML;HDR=YES&quot;;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[localhost.MelbourneFB_STG]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{97F2615E-4C64-4F69-BB5F-20D4E6749CF0}"
+      DTS:ObjectName="localhost.MelbourneFB_STG">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=localhost;Initial Catalog=MelbourneFB_STG;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-Package-{97F2615E-4C64-4F69-BB5F-20D4E6749CF0}localhost.MelbourneFB_STG;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\SEQ_LiquorLicences"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{DB1CCE43-50A2-4E59-A2D6-5FB4AC6C70BC}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SEQ_LiquorLicences">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{6ECD18A5-C061-4704-ABD4-172E99784FC5}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="DFT_Load_LiquorLicences"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+                  name="Derived Column"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Inputs[Derived Column Input]">
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source"
+                  componentClassID="Microsoft.ExcelSource"
+                  contactInfo="Excel Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+                  description="Excel Source"
+                  name="Excel Source"
+                  usesDispositions="true"
+                  version="1">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">Current_Victorian_Licences_By_L$</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT * FROM [Current_Victorian_Licences_By_L$A5:W]</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mapping from parameters in the SQL command to variables."
+                      name="ParameterMapping"></property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 1]"
+                      connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 1]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output]"
+                      name="Excel Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[F9]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[F9]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[F9]"
+                          name="F9"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[F15]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[F15]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[F15]"
+                          name="F15"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[F16]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[F16]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[F16]"
+                          name="F16"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Licence Num]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Licence Num]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Licence Num]"
+                          name="Licence Num"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Licensee]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Licensee]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Licensee]"
+                          name="Licensee"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Trading As]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Trading As]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Trading As]"
+                          name="Trading As"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Category]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Category]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Category]"
+                          name="Category"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Trading Hours]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Trading Hours]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Trading Hours]"
+                          name="Trading Hours"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[After 11 pm]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[After 11 pm]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[After 11 pm]"
+                          name="After 11 pm"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Maximum Capacity]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Maximum Capacity]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Maximum Capacity]"
+                          name="Maximum Capacity"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Address]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Address]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Address]"
+                          name="Address"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[F10]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[F10]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[F10]"
+                          name="F10"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Suburb]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Suburb]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Suburb]"
+                          name="Suburb"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postcode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Postcode]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postcode]"
+                          name="Postcode"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Latitude]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Latitude]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Latitude]"
+                          name="Latitude"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Longitude]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Longitude]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Longitude]"
+                          name="Longitude"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postal Address]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Postal Address]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postal Address]"
+                          name="Postal Address"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postal Suburb]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Postal Suburb]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postal Suburb]"
+                          name="Postal Suburb"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postal Postcode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Postal Postcode]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postal Postcode]"
+                          name="Postal Postcode"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Council]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Council]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Council]"
+                          name="Council"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Region]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Region]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Region]"
+                          name="Region"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Metro/Regional]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Metro/Regional]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Metro/Regional]"
+                          name="Metro/Regional"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Gaming]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Gaming]"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Gaming]"
+                          name="Gaming"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[F9]"
+                          dataType="wstr"
+                          length="255"
+                          name="F9" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[F15]"
+                          dataType="wstr"
+                          length="255"
+                          name="F15" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[F16]"
+                          dataType="wstr"
+                          length="255"
+                          name="F16" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Licence Num]"
+                          dataType="wstr"
+                          length="255"
+                          name="Licence Num" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Licensee]"
+                          dataType="wstr"
+                          length="255"
+                          name="Licensee" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Trading As]"
+                          dataType="wstr"
+                          length="255"
+                          name="Trading As" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Category]"
+                          dataType="wstr"
+                          length="255"
+                          name="Category" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Trading Hours]"
+                          dataType="wstr"
+                          length="255"
+                          name="Trading Hours" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[After 11 pm]"
+                          dataType="wstr"
+                          length="255"
+                          name="After 11 pm" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Maximum Capacity]"
+                          dataType="wstr"
+                          length="255"
+                          name="Maximum Capacity" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Address]"
+                          dataType="wstr"
+                          length="255"
+                          name="Address" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[F10]"
+                          dataType="wstr"
+                          length="255"
+                          name="F10" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Suburb]"
+                          dataType="wstr"
+                          length="255"
+                          name="Suburb" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Postcode]"
+                          dataType="wstr"
+                          length="255"
+                          name="Postcode" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Latitude]"
+                          dataType="wstr"
+                          length="255"
+                          name="Latitude" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Longitude]"
+                          dataType="wstr"
+                          length="255"
+                          name="Longitude" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Postal Address]"
+                          dataType="wstr"
+                          length="255"
+                          name="Postal Address" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Postal Suburb]"
+                          dataType="wstr"
+                          length="255"
+                          name="Postal Suburb" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Postal Postcode]"
+                          dataType="wstr"
+                          length="255"
+                          name="Postal Postcode" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Council]"
+                          dataType="wstr"
+                          length="255"
+                          name="Council" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Region]"
+                          dataType="wstr"
+                          length="255"
+                          name="Region" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Metro/Regional]"
+                          dataType="wstr"
+                          length="255"
+                          name="Metro/Regional" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].ExternalColumns[Gaming]"
+                          dataType="wstr"
+                          length="255"
+                          name="Gaming" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output]"
+                      isErrorOut="true"
+                      name="Excel Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Licence Num]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Licence Num]"
+                          name="Licence Num" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Licensee]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Licensee]"
+                          name="Licensee" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Trading As]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Trading As]"
+                          name="Trading As" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Category]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Category]"
+                          name="Category" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Trading Hours]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Trading Hours]"
+                          name="Trading Hours" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[After 11 pm]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[After 11 pm]"
+                          name="After 11 pm" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Maximum Capacity]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Maximum Capacity]"
+                          name="Maximum Capacity" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Address]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Address]"
+                          name="Address" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[F9]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[F9]"
+                          name="F9" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[F10]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[F10]"
+                          name="F10" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Suburb]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Suburb]"
+                          name="Suburb" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Postcode]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Postcode]"
+                          name="Postcode" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Latitude]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Latitude]"
+                          name="Latitude" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Longitude]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Longitude]"
+                          name="Longitude" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[F15]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[F15]"
+                          name="F15" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[F16]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[F16]"
+                          name="F16" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Postal Address]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Postal Address]"
+                          name="Postal Address" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Postal Suburb]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Postal Suburb]"
+                          name="Postal Suburb" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Postal Postcode]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Postal Postcode]"
+                          name="Postal Postcode" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Council]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Council]"
+                          name="Council" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Region]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Region]"
+                          name="Region" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Metro/Regional]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Metro/Regional]"
+                          name="Metro/Regional" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Gaming]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[Gaming]"
+                          name="Gaming" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="OLE DB Destination"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[stg].[LiquorLicences]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">0</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[localhost.MelbourneFB_STG]"
+                      connectionManagerRefId="Package.ConnectionManagers[localhost.MelbourneFB_STG]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Licence Num]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Licence Num"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Licence Num]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Licence Num]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Licensee]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Licensee"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Licensee]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Licensee]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Trading As]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Trading As"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Trading As]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Trading As]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Category]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Category"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Category]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Category]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Trading Hours]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Trading Hours"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Trading Hours]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Trading Hours]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[After 11 pm]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="After 11 pm"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[After 11 pm]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[After 11 pm]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Maximum Capacity]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Maximum Capacity"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Maximum Capacity]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Maximum Capacity]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Address]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Address"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Address]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Address]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Suburb]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Suburb"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Suburb]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Suburb]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Postcode]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Postcode"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Postcode]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Postcode]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Latitude]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Latitude"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Latitude]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Latitude]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Longitude]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Longitude"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Longitude]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Longitude]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Council]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Council"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Council]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Council]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Region]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Region"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Region]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Region]" />
+                        <inputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Metro/Regional]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Metro/Regional"
+                          externalMetadataColumnId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Metro/Regional]"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output].Columns[Metro/Regional]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Licence Num]"
+                          dataType="wstr"
+                          length="50"
+                          name="Licence Num" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Licensee]"
+                          dataType="wstr"
+                          length="300"
+                          name="Licensee" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Trading As]"
+                          dataType="wstr"
+                          length="300"
+                          name="Trading As" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Category]"
+                          dataType="wstr"
+                          length="100"
+                          name="Category" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Trading Hours]"
+                          dataType="wstr"
+                          length="100"
+                          name="Trading Hours" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[After 11 pm]"
+                          dataType="wstr"
+                          length="20"
+                          name="After 11 pm" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Maximum Capacity]"
+                          dataType="wstr"
+                          length="20"
+                          name="Maximum Capacity" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Address]"
+                          dataType="wstr"
+                          length="300"
+                          name="Address" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Suburb]"
+                          dataType="wstr"
+                          length="100"
+                          name="Suburb" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Postcode]"
+                          dataType="wstr"
+                          length="20"
+                          name="Postcode" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Latitude]"
+                          dataType="wstr"
+                          length="50"
+                          name="Latitude" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Longitude]"
+                          dataType="wstr"
+                          length="50"
+                          name="Longitude" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Council]"
+                          dataType="wstr"
+                          length="150"
+                          name="Council" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Region]"
+                          dataType="wstr"
+                          length="100"
+                          name="Region" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Metro/Regional]"
+                          dataType="wstr"
+                          length="50"
+                          name="Metro/Regional" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoadBatchID]"
+                          dataType="i4"
+                          name="LoadBatchID" />
+                        <externalMetadataColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoadedAt]"
+                          dataType="dbTimeStamp2"
+                          name="LoadedAt" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences.Paths[Derived Column Output]"
+                  endId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  name="Derived Column Output"
+                  startId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences.Paths[Excel Source Output]"
+                  endId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column.Inputs[Derived Column Input]"
+                  name="Excel Source Output"
+                  startId="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source.Outputs[Excel Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\SEQ_LiquorLicences\SQL_Truncate_LiquorLicences"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{64DF8EC6-70EA-44A7-AE26-D91B9DFDFA23}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SQL_Truncate_LiquorLicences"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2025; © 2025 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{97F2615E-4C64-4F69-BB5F-20D4E6749CF0}"
+              SQLTask:SqlStatementSource="TRUNCATE TABLE stg.LiquorLicences;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\SEQ_LiquorLicences.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{D0D76B6C-0093-455C-B706-0CA4BEA1CA45}"
+          DTS:From="Package\SEQ_LiquorLicences\SQL_Truncate_LiquorLicences"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_02_StagingLoad"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{1BDB2918-5980-4F19-AD02-DC7EF1ACBCB6}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_02_StagingLoad"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2025; © 2025 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{97F2615E-4C64-4F69-BB5F-20D4E6749CF0}"
+          SQLTask:SqlStmtSourceType="FileConnection"
+          SQLTask:SqlStatementSource="02_staging_load.sql" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\SQL_03_SpatialMapping"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{A2027FB4-F686-40E6-AD9F-8391C10FED32}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="SQL_03_SpatialMapping"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2025; © 2025 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{97F2615E-4C64-4F69-BB5F-20D4E6749CF0}"
+          SQLTask:SqlStmtSourceType="FileConnection"
+          SQLTask:SqlStatementSource="03_spatial_mapping.sql" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{4CB1FAF1-9C3F-4FD5-ACF2-600850C6E8A8}"
+      DTS:From="Package\SQL_02_StagingLoad"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\SEQ_LiquorLicences" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{36E0C918-A23E-4836-9E5A-404425FAB057}"
+      DTS:From="Package\SEQ_LiquorLicences"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\SQL_03_SpatialMapping" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="211,42"
+          Id="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences"
+          TopLeft="33,129" />
+        <NodeLayout
+          Size="235,42"
+          Id="Package\SEQ_LiquorLicences\SQL_Truncate_LiquorLicences"
+          TopLeft="27,24" />
+        <EdgeLayout
+          Id="Package\SEQ_LiquorLicences.PrecedenceConstraints[Constraint]"
+          TopLeft="141.5,66">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,63"
+              Start="0,0"
+              End="0,55.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,55.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="288,229"
+          Size="288,272"
+          Id="Package\SEQ_LiquorLicences"
+          TopLeft="257,171.5" />
+        <NodeLayout
+          Size="194,42"
+          Id="Package\SQL_02_StagingLoad"
+          TopLeft="308.333333333334,71.6666666666667" />
+        <NodeLayout
+          Size="202,42"
+          Id="Package\SQL_03_SpatialMapping"
+          TopLeft="304.166666666667,545" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="403.166666666667,113.666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,57.8333333333333"
+              Start="0,0"
+              End="0,50.3333333333333">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,50.3333333333333" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="403.083333333334,443.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,101.5"
+              Start="0,0"
+              End="0,94.0000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,94.0000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="177,42"
+          Id="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination"
+          TopLeft="475,418" />
+        <NodeLayout
+          Size="158,42"
+          Id="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Derived Column"
+          TopLeft="482,305" />
+        <NodeLayout
+          Size="144,42"
+          Id="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source"
+          TopLeft="492,198" />
+        <EdgeLayout
+          Id="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences.Paths[Derived Column Output]"
+          TopLeft="562.25,347">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,71"
+              Start="0,0"
+              End="0,63.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,63.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences.Paths[Excel Source Output]"
+          TopLeft="562.5,240">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,65"
+              Start="0,0"
+              End="0,57.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,57.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\SEQ_LiquorLicences\DFT_Load_LiquorLicences\Excel Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
