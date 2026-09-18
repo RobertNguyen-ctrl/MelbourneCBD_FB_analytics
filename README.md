@@ -5,6 +5,7 @@
 An end-to-end data warehouse and BI system that answers those questions from five open datasets (~2.37 million rows), built with SQL Server, SSIS, Power BI, Python and R.
 
 ![Overview](Documents/screenshots/Overview.png)
+
 ---
 
 ## Recommendation
@@ -19,7 +20,11 @@ An end-to-end data warehouse and BI system that answers those questions from fiv
 | Demand shape | Café window 40.4% of footfall vs lunch window 30% — people drink more than they eat here |
 | Future demand | 607 residential dwellings under construction: 5th highest of 56 blocks, 18× the median |
 
+![Overview](Documents/screenshots/block51.png)
+
 Block 35 (Retail Strip) and Block 15 (Mixed Commercial) have larger absolute seat gaps but are already crowded — 21 and 37 venues respectively. Block 51 pairs a real shortage with a thin competitive field.
+
+![Overview](Documents/screenshots/Blockchose.png)
 
 ---
 
@@ -78,6 +83,8 @@ All open data, CC BY 4.0.
                                      Python (k-means) · R (hypothesis tests)
 ```
 
+![Overview](Documents/screenshots/schema.png)
+
 **Warehouse** — galaxy schema, 3 fact tables and 7 dimensions. SCD Type 2 on `DimBlock` and `DimSensor` using MD5 hash comparison. Blocks are joined to sensors by a 200 m spatial mapping.
 
 **ETL** — three SSIS packages (`00_Master` orchestrates `01_Load_Staging` and `02_Load_DW`) driving 12 numbered SQL scripts in sequence. The pipeline is idempotent: a machine shutdown mid-load once duplicated the entire LiquorLicences table (47,524 rows), after which every load was rebuilt on a truncate-and-load pattern.
@@ -90,11 +97,19 @@ All open data, CC BY 4.0.
 
 **Trading hours.** 16:00–18:00 carries 23.9% of daily footfall, against 13.7% for the lunch window and 11.0% for the morning. The absolute peak is 17:00 on Thursday. 07:00 accounts for only 3.4% — opening at 7am runs ahead of demand, so the recommendation opens at 8am. Sunday is the weakest day at 11.6%.
 
+![Overview](Documents/screenshots/hour.png)
+
 **Night trade is not worth it.** Hours after 22:00 account for 4.93% of weekly footfall, while 267 late-night liquor licences already exist across 89 blocks. Only 31 of those 267 (12%) are 24-hour licences — even venues permitted to trade late mostly choose not to. Thin demand, thick supply.
 
 **Block archetypes.** k-means groups 71 blocks into 7 archetypes (silhouette 0.19 — the blocks sit on a continuum rather than in discrete clusters, so the labels are interpretive, not a hard classification). Ranked by aggregate seat gap: Thoroughfare +11.3K, Retail Strip +5.1K, Education Precinct +1.6K, Office Core −2.7K, Visitor & Weekend −3.1K, Low-traffic −4.4K, Mixed Commercial −6.9K. Thoroughfare tops the list but is public infrastructure — Princes Bridge, Federation Square, the RMIT campus — with enormous footfall and no leasable frontage. Excluded.
 
+![Overview](Documents/screenshots/kmeans.png)
+
+![Overview](Documents/screenshots/archetype.png)
+
 **Outdoor seating pays.** 80% of observed hours are suitable for outdoor seating and rain falls in only 8.67% of hours. A paired regression — comparing like hours, like weekdays and like temperature bands, differing only in rain — puts the effect of rain at **−15.7%** of footfall (95% CI −17.4% to −13.9%, p = 2.8e-60). Light rain costs roughly 4,300 pedestrians/hour, heavy rain roughly 9,200. A naive comparison of wet and dry hours shows only −6%, because Melbourne rain tends to fall at night and in winter when streets are already empty. Customers respond to the volume of rain, not merely its presence — which is what makes an awning worth the capital.
+
+![Overview](Documents/screenshots/weather.png)
 
 **Statistical tests (R).**
 
@@ -102,6 +117,10 @@ All open data, CC BY 4.0.
 |---|---|---|
 | Spearman — footfall vs seats | rho = 0.45, p < 0.001, n = 56 | The market does allocate seats toward footfall, but loosely. The residual is the opportunity. |
 | Kruskal-Wallis — saturation across 7 CLUE areas | chi² = 0.94, df = 6, p = 0.988 | Saturation does not differ between precincts. Variation is within them — which is why site selection must be done block by block, not suburb by suburb. |
+| Regression — rain effect on footfall | −15.7% (95% CI −17.4% to −13.9%), p = 2.8e-60 | Light rain costs ~4,300 pedestrians/hour, heavy rain ~9,200. Effect nearly 3× a naive comparison — the awning has real ROI. |
+
+![Overview](Documents/screenshots/stat1.png)
+![Overview](Documents/screenshots/stat2.png)
 
 ---
 
